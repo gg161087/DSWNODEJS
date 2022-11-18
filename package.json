@@ -1,0 +1,23 @@
+{
+  "name": "dswnodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gg161087/DSWNODEJS.git"
+  },
+  "author": "Gonzalo Gonzalez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gg161087/DSWNODEJS/issues"
+  },
+  "homepage": "https://github.com/gg161087/DSWNODEJS#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
