@@ -1,0 +1,102 @@
+{
+	"info": {
+		"_postman_id": "04b4716b-32a1-41e3-ad16-452bb4cc094f",
+		"name": "Base",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24378517"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "list_users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/users/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create_user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Gonzalo\",\r\n    \"last_name\": \"Gonzalez\",    \r\n    \"email\": \"gg161087@gmail.com\",\r\n    \"age\": 35\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/users/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list_user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/users/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						},
+						"description": "##### Lista la información de un usuario\n\nRecibe por parámetro el id del usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Endpoint",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/users/test",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"test"
+							]
+						},
+						"description": "##### Muestra un mensaje de prueba"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
