@@ -1,6 +1,6 @@
 # DSWNODEJS
 PORT=5000
 ENVIRONMENT='development'
-DB_NAME=bd_name
+DB_NAME=db_name
 DB_USERNAME=postgres
 DB_PASSWORD=password

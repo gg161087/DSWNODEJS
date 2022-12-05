@@ -1,4 +1,5 @@
 const MODELS = require('../database/models/index');
+const ERRORS = require("../const/errors_users")
 
 module.exports = {
 

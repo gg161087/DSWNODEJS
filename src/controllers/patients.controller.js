@@ -1,4 +1,5 @@
 const MODELS = require('../database/models/index')
+const ERRORS = require("../const/errors_patients")
 
 module.exports = {
     getPatients : async(req, res)=>{
@@ -38,7 +39,7 @@ module.exports = {
                     }]                        
                 }]            
             })
-            if (!patient) return next()
+            if (!patient) return next(ERRORS.PacienteInexistente)
 
             res.json({
                 success: true,
@@ -53,15 +54,13 @@ module.exports = {
     },
     postPatient : async (req, res)=>{
         try {
-            const patient = await MODELS.patients.create(req.body)
-            doctor_id = await MODELS.doctors.findOne({where:{id: req.params.doctorId}})
-            console.log(doctor_id)
-            if (!doctor_id) return next()
+            const patient = await MODELS.patients.create(req.body)            
             
             const patient_doctor = await MODELS.patient_doctor.create({
                 doctorId: req.body.doctorId,
                 patientId: patient.id
-            })    
+            })
+            if (!patient) return next(ERRORS.PacienteInexistente)    
             res.json({
                 success: true,
                 data: {

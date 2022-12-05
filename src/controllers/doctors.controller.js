@@ -1,4 +1,5 @@
 const MODELS = require('../database/models/index')
+const ERRORS = require("../const/errors_doctors")
 
 module.exports = {
     getDoctors : async(req, res)=>{
@@ -28,8 +29,15 @@ module.exports = {
             const doctor = await MODELS.doctors.findOne({
                 where: {
                     id: req.params.idDoctor
-                }
+                },
+                include: [{
+                    model: MODELS.patient_doctor,
+                    include: [{
+                        model: MODELS.patients
+                    }]
+                }]
             })
+            if(!doctor) return next(ERRORS.MedicoInexistente)
 
             res.json({
                 success: true,
