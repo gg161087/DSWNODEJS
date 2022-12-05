@@ -2,36 +2,36 @@
 
 module.exports = (sequelize, DataTypes) => {
 
-  let driver = sequelize.define('driver', {
+  let Doctors = sequelize.define('doctors', {
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     last_name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
-    dni: {
-      type: DataTypes.INTEGER,
-    },
-    age: {
-      type: DataTypes.INTEGER,
-    },
-    class_license: {
+    email: {
       type: DataTypes.STRING,
-      allowNull: false
+    },
+    specialty: {
+      type: DataTypes.STRING,
+    },
+    enrollment: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,
       field: 'created_at',
       defaultValue: DataTypes.NOW,
-      allowNull: false
+      allowNull: false,
     },
     updatedAt: {
       type: DataTypes.DATE,
@@ -48,9 +48,9 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
   })
 
-  driver.associate = models => {
-    
+  Doctors.associate = models => {
+    Doctors.hasMany(models.patient_doctor)
   }
 
-  return driver
+  return Doctors
 }
