@@ -15,16 +15,17 @@ module.exports = {
                 }
             });
         } catch (err) {
-            return next(err);
+            return next(ERRORS.alListar);
         }
 
     },
+
     getUser: async (req, res, next) => {
 
         try {
             const USER = await MODELS.users.findOne({
                 where: {
-                    id: req.params.idUser
+                    id: req.params.id
                 }
             });
             
@@ -35,12 +36,12 @@ module.exports = {
                 }
             })
         } catch (err) {
-            return next(err);
+            return next(ERRORS.alObtener);
         }
 
     },
 
-    postUser: async (req, res, next) => {
+    createUser: async (req, res, next) => {
 
         try {
             const USER = await MODELS.users.create(req.body)
@@ -52,42 +53,41 @@ module.exports = {
                 }
             })
         } catch (err) {
-            return next(err);
+            return next(ERRORS.alCrear);
         }
 
     },
-    postUser : async (req, res)=>{
+    
+    updateUser : async (req, res, next) => {
         try {
-            const USER = await MODELS.users.create(req.body)
-
+            const USER = await  MODELS.users.findByPk(req.params.id)    
+            const { name, last_name, email, age} = req.body;            
+            USER.name = name;
+            USER.last_name = last_name;
+            USER.email = email;
+            USER.age = age;            
+            await USER.save();
             res.json({
                 success: true,
                 data: {
                     id: USER.id
                 }
-            })
-
+            })     
         } catch (err) {
-            return next(err)
+            return next(ERRORS.alActualizar);
         }
     },
-    putUser : (req, res)=>{
-        res.send('Actualizando users')
-    },
-    deleteUser : (req, res)=>{
-        res.send('eliminando users')
-    },
 
-    test: async (req, res, next) => {
+    deleteUser : async (req, res, next) => {
         try {
-            console.log('Ejecutando test en users')
-
-            res.json({
-                message: 'Hola users'
-            })
-        } catch (err) {
-            console.log(err)
-        }
-    },
+            await MODELS.users.destroy({
+                where:{
+                    id: req.params.id
+                }
+            }) 
+        } catch (error) {
+            return next(ERRORS.alEliminar)
+        }   
+    }
 
 }

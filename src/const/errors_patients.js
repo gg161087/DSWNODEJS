@@ -1,31 +1,27 @@
 module.exports = {
 
-    'ValidationError': {
+    'alCargarLista': {
         code: 1000,
-        message: 'Error de validacion'
-    },
-    'FaltanCampos': {
-        code: 1001,
-        message: 'Faltan parámetros necesarios'
+        message: 'No se pudo cargar lista'
     },
     'PacienteInexistente': {
         code: 1002,
         message: 'El paciente no existe'
     },
-    'ArchivoInexistente': {
+    'alObtener': {
         code: 1003,
-        message: 'El archivo no existe'
+        message: 'No se pudo obtener de la lista'
     },
-    'CredencialesInvalidas': {
+    'alCrear': {
         code: 1004,
-        message: 'Credenciales inválidas'
+        message: 'Error al Crear'
     },
-    'UsuarioNoAutorizado': {
+    'alActualizar': {
         code: 1005,
-        message: 'Usuario no autorizado'
+        message: 'Error al Actualizar'
     },
-    'SesionExpirada': {
+    'alEliminar': {
         code: 1006,
-        message: 'Sesión expirada'
+        message: 'Error al Eliminar'
     }
 }

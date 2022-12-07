@@ -2,6 +2,7 @@ const MODELS = require('../database/models/index')
 const ERRORS = require("../const/errors_doctors")
 
 module.exports = {
+
     getDoctors : async(req, res)=>{
         try {
             const doctors = await MODELS.doctors.findAll({
@@ -21,14 +22,15 @@ module.exports = {
             })
 
         } catch (err) {
-            return next(err)
+            return next(ERRORS.alCargarLista)
         }
     },
+
     getDoctor : async(req, res)=>{
         try {
             const doctor = await MODELS.doctors.findOne({
                 where: {
-                    id: req.params.idDoctor
+                    id: req.params.id
                 },
                 include: [{
                     model: MODELS.patient_doctor,
@@ -47,10 +49,11 @@ module.exports = {
             })
 
         } catch (err) {
-            return next(err)
+            return next(ERRORS.alObtener);
         }
     },
-    postDoctor : async (req, res)=>{
+
+    createDoctor : async (req, res)=>{
         try {
             const doctor = await MODELS.doctors.create(req.body)
 
@@ -62,37 +65,41 @@ module.exports = {
             })
 
         } catch (err) {
-            return next(err)
+            return next(ERRORS.alCrear);
         }
     },
-    putDoctor : (req, res)=>{
-        res.send('Actualizando doctors')
+
+    updateDoctor : async (req, res)=>{
+        try {
+            const doctor = await MODELS.doctors.findByPk(req.params.id)    
+            const { name, last_name, email, specialty, enrollment} = req.body;
+            doctor.name = name;
+            doctor.last_name = last_name;
+            doctor.email = email;
+            doctor.specialty = specialty;
+            doctor.enrollment = enrollment; 
+            await doctor.save();
+            res.json({
+                success: true,
+                data: {
+                    id: doctor.id
+                }
+            })     
+        } catch (err) {
+            return next(ERRORS.alActualizar);
+        }
     },
+
     deleteDoctor : async (req, res)=>{
         try {
-            const doctor = await MODELS.doctors.delete({
-                where: {
-                    id: req.params.idDoctor
+            await Doctors.destroy({
+                where:{
+                    id: req.params.id
                 }
-            })
-
-            res.json({
-                success: true                
-            })
-
-        } catch (err) {
-            return next(err)
-        }
-    },
-    test : async (req, res, next) => {
-        try {
-            console.log('Ejecutando test en doctors')
-
-            res.json({
-                message: 'Hola doctors'
-            })
-        } catch (err) {
-            console.log(err)
-        }
+            }) 
+        } catch (error) {
+            return next(ERRORS.alEliminar);
+        } 
     }
+
 }

@@ -2,6 +2,7 @@ const MODELS = require('../database/models/index')
 const ERRORS = require("../const/errors_patients")
 
 module.exports = {
+    
     getPatients : async(req, res)=>{
         try {
             const patients = await MODELS.patients.findAll({
@@ -22,14 +23,15 @@ module.exports = {
             })
 
         } catch (err) {
-            return next(err)
+            return next(ERRORS.alCargarLista)
         }
     },
+
     getPatient : async(req, res)=>{
         try {
             const patient = await MODELS.patients.findOne({
                 where: {
-                    id: req.params.idPatient
+                    id: req.params.id
                 },                                   
                 include: [{
                     model: MODELS.patient_doctor,
@@ -49,10 +51,11 @@ module.exports = {
             })
 
         } catch (err) {
-            return next(err)
+            return next(ERRORS.alObtener)
         }
     },
-    postPatient : async (req, res)=>{
+
+    createPatient : async (req, res)=>{
         try {
             const patient = await MODELS.patients.create(req.body)            
             
@@ -69,24 +72,42 @@ module.exports = {
             })                        
 
         } catch (err) {
-            return next(err)
+            return next(ERRORS.alCrear)
         }
     },
-    putPatient : (req, res)=>{
-        res.send('Actualizando patients')
-    },
-    deletePatient : (req, res)=>{
-        res.send('eliminando patients')
-    },
-    test : async (req, res, next) => {
-        try {
-            console.log('Ejecutando test en patient')
 
+    updatePatient : async (req, res)=>{
+        try {
+            const patient = await MODELS.patients.findByPk(req.params.id) 
+            const { name, last_name, dni, email,  age, social_work} = req.body;
+            patient.name = name;
+            patient.last_name = last_name;
+            patient.dni = dni;
+            patient.email = email;
+            patient.age = age;
+            patient.social_work = social_work; 
+            await patient.save();
             res.json({
-                message: 'Hola patients'
-            })
+                success: true,
+                data: {
+                    id: patient.id
+                }
+            })     
         } catch (err) {
-            console.log(err)
-        }
+            return next(ERRORS.alActualizar);
+        } 
+    },
+
+    deletePatient : async (req, res)=>{
+        try {
+            await MODELS.patients.destroy({
+                where:{
+                    id: req.params.id
+                }
+            }) 
+        } catch (error) {
+            return next(ERRORS.alEliminar)
+        } 
     }
+
 }
