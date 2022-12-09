@@ -3,7 +3,7 @@ const ERRORS = require("../const/errors_users")
 
 module.exports = {
 
-    getUsers: async (req, res, next) => {
+    getUsers: async (req, res) => {
 
         try {
             const USERS = await MODELS.users.findAll();
@@ -14,13 +14,13 @@ module.exports = {
                     users: USERS
                 }
             });
-        } catch (err) {
-            return next(ERRORS.alListar);
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
 
     },
 
-    getUser: async (req, res, next) => {
+    getUser: async (req, res) => {
 
         try {
             const USER = await MODELS.users.findOne({
@@ -35,13 +35,13 @@ module.exports = {
                     user: USER
                 }
             })
-        } catch (err) {
-            return next(ERRORS.alObtener);
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
 
     },
 
-    createUser: async (req, res, next) => {
+    createUser: async (req, res) => {
 
         try {
             const USER = await MODELS.users.create(req.body)
@@ -52,13 +52,13 @@ module.exports = {
                     id: USER.id
                 }
             })
-        } catch (err) {
-            return next(ERRORS.alCrear);
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
 
     },
     
-    updateUser : async (req, res, next) => {
+    updateUser : async (req, res) => {
         try {
             const USER = await  MODELS.users.findByPk(req.params.id)    
             const { name, last_name, email, age} = req.body;            
@@ -73,21 +73,27 @@ module.exports = {
                     id: USER.id
                 }
             })     
-        } catch (err) {
-            return next(ERRORS.alActualizar);
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
     },
 
-    deleteUser : async (req, res, next) => {
+    deleteUser : async (req, res) => {
         try {
+            const id = req.params.id
+            const user = await  MODELS.users.findByPk(id)
+            if (user==null){
+                return res.status(500).json({message: 'ID inexistente'})  
+            }
             await MODELS.users.destroy({
                 where:{
-                    id: req.params.id
+                    id: id
                 }
-            }) 
+            })
+            return res.status(500).json({message: 'Eliminado Correctamente'})
+           
         } catch (error) {
-            return next(ERRORS.alEliminar)
+            return res.status(500).json({message: error.message})
         }   
     }
-
 }

@@ -1,5 +1,4 @@
 const MODELS = require('../database/models/index')
-const ERRORS = require("../const/errors_doctors")
 
 module.exports = {
 
@@ -21,8 +20,8 @@ module.exports = {
                 }
             })
 
-        } catch (err) {
-            return next(ERRORS.alCargarLista)
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
     },
 
@@ -39,7 +38,7 @@ module.exports = {
                     }]
                 }]
             })
-            if(!doctor) return next(ERRORS.MedicoInexistente)
+            if(!doctor) return res.status(500).json({message: 'ID inexistente'})
 
             res.json({
                 success: true,
@@ -48,8 +47,8 @@ module.exports = {
                 }
             })
 
-        } catch (err) {
-            return next(ERRORS.alObtener);
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
     },
 
@@ -64,20 +63,19 @@ module.exports = {
                 }
             })
 
-        } catch (err) {
-            return next(ERRORS.alCrear);
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
     },
 
     updateDoctor : async (req, res)=>{
         try {
-            const doctor = await MODELS.doctors.findByPk(req.params.id)    
-            const { name, last_name, email, specialty, enrollment} = req.body;
-            doctor.name = name;
-            doctor.last_name = last_name;
-            doctor.email = email;
-            doctor.specialty = specialty;
-            doctor.enrollment = enrollment; 
+            const id = req.params.id
+            const doctor = await MODELS.doctors.findByPk(id)
+            
+            if (!doctor) return res.json({message: 'ID inexistente'})
+
+            doctor.set(req.body)            
             await doctor.save();
             res.json({
                 success: true,
@@ -85,21 +83,27 @@ module.exports = {
                     id: doctor.id
                 }
             })     
-        } catch (err) {
-            return next(ERRORS.alActualizar);
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
     },
 
     deleteDoctor : async (req, res)=>{
         try {
-            await Doctors.destroy({
+            const id = req.params.id
+            const doctor = await MODELS.doctors.findByPk(id)            
+            if (doctor==null){
+                return res.status(500).json({message: 'ID inexistente'})   
+            }
+            await MODELS.doctors.destroy({
                 where:{
-                    id: req.params.id
+                    id: id
                 }
-            }) 
+            })
+            return res.status(500).json({message: 'Eliminado Correctamente'}) 
+            
         } catch (error) {
-            return next(ERRORS.alEliminar);
+            return res.status(500).json({message: error.message})
         } 
     }
-
 }

@@ -1,5 +1,4 @@
 const MODELS = require('../database/models/index')
-const ERRORS = require("../const/errors_patients")
 
 module.exports = {
     
@@ -22,8 +21,8 @@ module.exports = {
                 }
             })
 
-        } catch (err) {
-            return next(ERRORS.alCargarLista)
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
     },
 
@@ -41,7 +40,7 @@ module.exports = {
                     }]                        
                 }]            
             })
-            if (!patient) return next(ERRORS.PacienteInexistente)
+            if (!patient) return res.status(500).json({message: 'ID inexistente'})
 
             res.json({
                 success: true,
@@ -50,8 +49,8 @@ module.exports = {
                 }
             })
 
-        } catch (err) {
-            return next(ERRORS.alObtener)
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
     },
 
@@ -63,7 +62,7 @@ module.exports = {
                 doctorId: req.body.doctorId,
                 patientId: patient.id
             })
-            if (!patient) return next(ERRORS.PacienteInexistente)    
+            if (!patient) return res.status(500).json({message: 'Campos erroneos'})   
             res.json({
                 success: true,
                 data: {
@@ -71,21 +70,20 @@ module.exports = {
                 }
             })                        
 
-        } catch (err) {
-            return next(ERRORS.alCrear)
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         }
     },
 
     updatePatient : async (req, res)=>{
         try {
-            const patient = await MODELS.patients.findByPk(req.params.id) 
-            const { name, last_name, dni, email,  age, social_work} = req.body;
-            patient.name = name;
-            patient.last_name = last_name;
-            patient.dni = dni;
-            patient.email = email;
-            patient.age = age;
-            patient.social_work = social_work; 
+            const id = req.params.id
+            const patient = await MODELS.patients.findByPk(id)
+
+            if (!patient) return res.json({message: 'ID inexistente'})
+
+            patient.set(req.body)            
+            
             await patient.save();
             res.json({
                 success: true,
@@ -93,20 +91,27 @@ module.exports = {
                     id: patient.id
                 }
             })     
-        } catch (err) {
-            return next(ERRORS.alActualizar);
+        } catch (error) {
+            return res.status(500).json({message: error.message})
         } 
     },
 
     deletePatient : async (req, res)=>{
         try {
+            const id = req.params.id
+            const patient = await MODELS.patients.findByPk(id)            
+            if (patient==null){
+                return res.status(500).json({message: 'ID inexistente'})
+            }
             await MODELS.patients.destroy({
                 where:{
-                    id: req.params.id
+                    id: id
                 }
-            }) 
+            })
+            return res.status(500).json({message: 'Eliminado Correctamente'})
+            
         } catch (error) {
-            return next(ERRORS.alEliminar)
+            return res.status(500).json({message: error.message})
         } 
     }
 
