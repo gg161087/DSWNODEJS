@@ -56,25 +56,22 @@ module.exports = {
 
     createPatient : async (req, res)=>{
         try {
-            const patient = req.body                    
-            const doctor_id = req.body.doctorId   
-
+            const patient = await MODELS.patients.create(req.body)                 
+               
             if (!patient) return res.status(500).json({message: 'Campos erroneos'})  
 
-            const doctor = await MODELS.doctors.findByPk(doctor_id)
+            const doctor = await MODELS.doctors.findByPk(req.body.doctorId)
 
             if (!doctor) return res.status(500).json({message: 'ID Medico inexistente'})
-            console.log(doctor, patient)
-            await MODELS.patients.create(patient)
+            
             const patient_doctor = await MODELS.patient_doctor.create({
-                doctorId: doctor_id,
+                doctorId: req.body.doctorId,
                 patientId: patient.id
             })
             res.json({
                 success: true,
                 data: {
-                   id: patient.id,
-                   doctorId: patient_doctor.id
+                   id: patient.id
                 }
             })                        
 

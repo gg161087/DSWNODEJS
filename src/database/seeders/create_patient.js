@@ -7,7 +7,7 @@ module.exports = {
         return Promise.all([
             MODELS.patients.findOrCreate({
                 where: {
-                    id: "2"
+                    id: "1"
                 },
                 defaults: {
                     name: "Lalo",
@@ -20,7 +20,7 @@ module.exports = {
             }),
             MODELS.patients.findOrCreate({
                 where: {
-                    id: "3"
+                    id: "2"
                 },
                 defaults: {
                     name: "Cosme",
@@ -28,8 +28,7 @@ module.exports = {
                     dni: 8527410,
                     email: "cosme.fulanito@ejemplo.com",
                     age: 52,
-                    social_work: 741852,
-                    doctorId: 2
+                    social_work: 741852,                                        
                 }
             })
         ])
