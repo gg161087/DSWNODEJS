@@ -1,25 +1,32 @@
 const express = require('express');
-const GLOBAL_CONSTS = require('./const/globalConsts');
-const ROUTER_CONFIG = require('./routes/index.routes');
+const global_consts = require('./const/globalConsts');
+const index_routes = require('./routes/index.routes');
 
-const CONFIG_API = (app) => {
+let http_errors = require('http-errors')
+
+const apiConfig = (app) => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     return;
 }
 
-const CONFIG_ROUTER = (app) => {
-    app.use('/api', ROUTER_CONFIG.ROUT_INIT());
+const routerConfig = (app) => {
+    app.use('/api', index_routes.routesInit());
+    app.use('/', index_routes.routesAuth())
+
+    app.use(function (req, res){
+        res.status(200).json({message:'Not Found'})
+    })
 }
 
 const init = () => {
     const app = express();
-    CONFIG_API(app);
 
-    CONFIG_ROUTER(app);
+    apiConfig(app);
+    routerConfig(app);
 
-    app.listen(GLOBAL_CONSTS.PORT);
-    console.log('Servidor corriendo: http://127.0.0.1:'+ GLOBAL_CONSTS.PORT);
+    app.listen(global_consts.PORT);
+    console.log('Servidor corriendo: http://127.0.0.1:'+ global_consts.PORT);
 }
 
 init()

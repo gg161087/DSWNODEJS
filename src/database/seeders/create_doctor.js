@@ -1,11 +1,11 @@
 'use strict';
 
-const MODELS = require("../models/index");
+const models = require("../models/index");
 
 module.exports = {
     up: function (queryInterface, Sequelize) {
         return Promise.all([
-            MODELS.doctors.findOrCreate({
+            models.doctors.findOrCreate({
                 where: {
                     id: "1"
                 },
@@ -17,7 +17,7 @@ module.exports = {
                     enrollment: 213456
                 }
             }),
-            MODELS.doctors.findOrCreate({
+            models.doctors.findOrCreate({
                 where: {
                     id: "2"
                 },

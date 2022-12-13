@@ -1,14 +1,14 @@
-const MODELS = require('../database/models/index')
+const models = require('../database/models/index')
 
 module.exports = {
     
     getPatients : async(req, res)=>{
         try {
-            const patients = await MODELS.patients.findAll({
+            const patients = await models.patients.findAll({
                 include: [{
-                    model: MODELS.patient_doctor,
+                    model: models.patient_doctor,
                     include: [{
-                        model: MODELS.doctors,
+                        model: models.doctors,
                         attributes: ["name", "last_name", "enrollment"]
                     }]                        
                 }]
@@ -28,14 +28,14 @@ module.exports = {
 
     getPatient : async(req, res)=>{
         try {
-            const patient = await MODELS.patients.findOne({
+            const patient = await models.patients.findOne({
                 where: {
                     id: req.params.id
                 },                                   
                 include: [{
-                    model: MODELS.patient_doctor,
+                    model: models.patient_doctor,
                     include: [{
-                        model: MODELS.doctors,
+                        model: models.doctors,
                         attributes: ["name", "last_name", "enrollment"]
                     }]                        
                 }]            
@@ -56,22 +56,23 @@ module.exports = {
 
     createPatient : async (req, res)=>{
         try {
-            const patient = await MODELS.patients.create(req.body)                 
+            const patient = await models.patients.create(req.body)                 
                
             if (!patient) return res.status(500).json({message: 'Campos erroneos'})  
 
-            const doctor = await MODELS.doctors.findByPk(req.body.doctorId)
+            const doctor = await models.doctors.findByPk(req.body.doctorId)
 
             if (!doctor) return res.status(500).json({message: 'ID Medico inexistente'})
             
-            const patient_doctor = await MODELS.patient_doctor.create({
+            const patient_doctor = await models.patient_doctor.create({
                 doctorId: req.body.doctorId,
                 patientId: patient.id
             })
             res.json({
                 success: true,
                 data: {
-                   id: patient.id
+                    doctorId: patient_doctor.doctorId,
+                    id: patient.id
                 }
             })                        
 
@@ -83,9 +84,18 @@ module.exports = {
     updatePatient : async (req, res)=>{
         try {
             const id = req.params.id
-            const patient = await MODELS.patients.findByPk(id)
+            const patient = await models.patients.findByPk(id)
 
             if (!patient) return res.json({message: 'ID inexistente'})
+
+            const doctor = await models.doctors.findByPk(req.body.doctorId)
+
+            if (!doctor) return res.status(500).json({message: 'ID Medico inexistente'})
+            
+            const patient_doctor = await models.patient_doctor.create({
+                doctorId: req.body.doctorId,
+                patientId: patient.id
+            })
 
             patient.set(req.body)            
             
@@ -93,6 +103,7 @@ module.exports = {
             res.json({
                 success: true,
                 data: {
+                    doctorId: patient_doctor.doctorId,
                     id: patient.id
                 }
             })     
@@ -104,11 +115,11 @@ module.exports = {
     deletePatient : async (req, res)=>{
         try {
             const id = req.params.id
-            const patient = await MODELS.patients.findByPk(id)            
+            const patient = await models.patients.findByPk(id)            
             if (patient==null){
                 return res.status(500).json({message: 'ID inexistente'})
             }
-            await MODELS.patients.destroy({
+            await models.patients.destroy({
                 where:{
                     id: id
                 }

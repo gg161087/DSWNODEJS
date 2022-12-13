@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
 
-  let Users = sequelize.define('users', {
+  let File_User = sequelize.define('file_user', {
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
@@ -11,19 +11,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    age: {
-      type: DataTypes.INTEGER,
-    },    
-    email: {
+      allowNull: true
+    },   
+    file: {
       type: DataTypes.STRING,
+      allowNull: true
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    password: {
+    file_name: {
       type: DataTypes.STRING,
       allowNull: false
     }
@@ -32,9 +26,9 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
   })
 
-  Users.associate = models => {
-    Users.hasMany(models.file_user)
+  File_User.associate = models => {
+    File_User.belongsTo(models.users)
   }
 
-  return Users
+  return File_User
 }

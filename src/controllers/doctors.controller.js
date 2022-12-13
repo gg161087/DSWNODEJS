@@ -1,14 +1,14 @@
-const MODELS = require('../database/models/index')
+const models = require('../database/models/index')
 
 module.exports = {
 
     getDoctors : async(req, res)=>{
         try {
-            const doctors = await MODELS.doctors.findAll({
+            const doctors = await models.doctors.findAll({
                 include: [{
-                    model: MODELS.patient_doctor,
+                    model: models.patient_doctor,
                     include: [{
-                        model: MODELS.patients
+                        model: models.patients
                     }]
                 }]
             })
@@ -27,14 +27,14 @@ module.exports = {
 
     getDoctor : async(req, res)=>{
         try {
-            const doctor = await MODELS.doctors.findOne({
+            const doctor = await models.doctors.findOne({
                 where: {
                     id: req.params.id
                 },
                 include: [{
-                    model: MODELS.patient_doctor,
+                    model: models.patient_doctor,
                     include: [{
-                        model: MODELS.patients
+                        model: models.patients
                     }]
                 }]
             })
@@ -54,7 +54,7 @@ module.exports = {
 
     createDoctor : async (req, res)=>{
         try {
-            const doctor = await MODELS.doctors.create(req.body)
+            const doctor = await models.doctors.create(req.body)
 
             res.json({
                 success: true,
@@ -71,7 +71,7 @@ module.exports = {
     updateDoctor : async (req, res)=>{
         try {
             const id = req.params.id
-            const doctor = await MODELS.doctors.findByPk(id)
+            const doctor = await models.doctors.findByPk(id)
             
             if (!doctor) return res.json({message: 'ID inexistente'})
 
@@ -91,7 +91,7 @@ module.exports = {
     deleteDoctor : async (req, res)=>{
         try {
             const id = req.params.id
-            const doctor = await MODELS.doctors.findByPk(id)            
+            const doctor = await models.doctors.findByPk(id)            
             if (doctor==null){
                 return res.status(500).json({message: 'ID inexistente'})   
             }

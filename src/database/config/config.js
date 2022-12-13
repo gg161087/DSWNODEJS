@@ -1,11 +1,11 @@
-const GLOBAL_CONSTS = require('../../const/globalConsts');
+const global_Consts = require('../../const/globalConsts');
 
 module.exports = {
 
   "development": {
-    "username": GLOBAL_CONSTS.DB_USERNAME,
-    "password": GLOBAL_CONSTS.DB_PASSWORD,
-    "database": GLOBAL_CONSTS.DB_NAME,
+    "username": global_Consts.DB_USERNAME,
+    "password": global_Consts.DB_PASSWORD,
+    "database": global_Consts.DB_NAME,
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

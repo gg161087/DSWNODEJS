@@ -1,16 +1,17 @@
-const MODELS = require('../database/models/index');
+const models = require('../database/models/index');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
 
     getUsers: async (req, res) => {
 
         try {
-            const USERS = await MODELS.users.findAll();
+            const users = await models.users.findAll();
 
             res.json({
                 success: true,
                 data: {
-                    users: USERS
+                    users: users
                 }
             });
         } catch (error) {
@@ -22,7 +23,7 @@ module.exports = {
     getUser: async (req, res) => {
 
         try {
-            const USER = await MODELS.users.findOne({
+            const user = await models.users.findOne({
                 where: {
                     id: req.params.id
                 }
@@ -31,7 +32,7 @@ module.exports = {
             res.json({
                 success: true,
                 data: {
-                    user: USER
+                    user: user
                 }
             })
         } catch (error) {
@@ -43,12 +44,14 @@ module.exports = {
     createUser: async (req, res) => {
 
         try {
-            const USER = await MODELS.users.create(req.body)
+            req.body.password = bcrypt.hashSync(req.body.password, 10)
+
+            const user = await models.users.create(req.body)
 
             res.json({
                 success: true,
                 data: {
-                    id: USER.id
+                    id: user.id
                 }
             })
         } catch (error) {
@@ -59,17 +62,16 @@ module.exports = {
     
     updateUser : async (req, res) => {
         try {
-            const USER = await  MODELS.users.findByPk(req.params.id)    
-            const { name, last_name, email, age} = req.body;            
-            USER.name = name;
-            USER.last_name = last_name;
-            USER.email = email;
-            USER.age = age;            
-            await USER.save();
+            req.body.password = bcrypt.hashSync(req.body.password, 10)
+            const user = await  models.users.findByPk(req.params.id)   
+
+            user.set(req.body)   
+
+            await user.save();
             res.json({
                 success: true,
                 data: {
-                    id: USER.id
+                    id: user.id
                 }
             })     
         } catch (error) {
@@ -80,7 +82,7 @@ module.exports = {
     deleteUser : async (req, res) => {
         try {
             const id = req.params.id
-            const user = await  MODELS.users.findByPk(id)
+            const user = await  models.users.findByPk(id)
             if (user==null){
                 return res.status(500).json({message: 'ID inexistente'})  
             }
@@ -94,5 +96,73 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({message: error.message})
         }   
+    },
+
+    uploadFile: async (req, res) => {
+        try {
+
+            const user = await models.users.findOne({
+                where: {
+                    id: req.body.usuarioId
+                }
+            })
+            if (!user) return res.status(500).json({message: 'usuario inexistente'})  
+
+
+           
+            const file_user = await models.file_user.findOne({
+                where: {
+                    userId: req.body.userId,
+                    name: req.body.name
+                }
+            })
+            if (!file_user) { 
+
+                const file = await models.file_user.create({
+                    name: req.body.name, 
+                    file: req.file ? req.file.file : null, 
+                    file_name: req.file ? req.file.file_name : null, 
+                    userId: req.body.userId
+                })
+            }
+
+            res.json({
+                success: true,
+                data: {
+                    message: "Cargado correctamente"
+                }
+            })
+
+        } catch (error) {
+            return res.status(500).json({message: error.message})            
+        }
+    },
+
+    downloadFile: async (req, res, next) => {
+        try {
+
+           
+            const user = await models.user.findOne({
+                where: {
+                    id: req.body.userId
+                }
+            })
+            if (!user) return res.status(500).json({message: 'usuario inexistente'})
+
+           
+            const file = await models.file_user.findOne({
+                where: {
+                    userId: req.body.userId,
+                    name: req.body.name
+                }
+            })
+            if (!file) return res.status(500).json({message: 'arcahivo inexistente'})
+
+
+            res.download('uploads/archivos-usuarios/' + file.file, file.file_name)
+
+        } catch (error) {
+            return res.status(500).json({message: error.message})
+        }
     }
 }

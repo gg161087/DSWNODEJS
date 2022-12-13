@@ -1,30 +1,33 @@
 'use strict';
 
-const MODELS = require("../models/index");
+const models = require('../models/index');
+const bcrypt = require('bcryptjs')
 
 module.exports = {
     up: function (queryInterface, Sequelize) {
         return Promise.all([
-            MODELS.users.findOrCreate({
+            models.users.findOrCreate({
+                where: {
+                    id: "1"
+                },
+                defaults: {
+                    name: "root",
+                    age: 25,
+                    email: "root@ejemplo.com",
+                    username: "root",
+                    password: bcrypt.hashSync('root', 10)
+                }
+            }),
+            models.users.findOrCreate({
                 where: {
                     id: "2"
                 },
                 defaults: {
-                    name: "Lalo",
-                    last_name: "Landa",
-                    email: "lalo.landa@ejemplo.com",
-                    age: 18
-                }
-            }),
-            MODELS.users.findOrCreate({
-                where: {
-                    id: "3"
-                },
-                defaults: {
-                    name: "Cosme",
-                    last_name: "Fulanito",
-                    email: "cosme.fulanito@ejemplo.com",
-                    age: 27
+                    name: "Admin",
+                    age: 25,
+                    email: "admin@ejemplo.com",
+                    username: "admin",
+                    password: bcrypt.hashSync('admin', 10)
                 }
             })
         ])
