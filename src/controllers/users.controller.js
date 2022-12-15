@@ -6,7 +6,9 @@ module.exports = {
     getUsers: async (req, res) => {
 
         try {
-            const users = await models.users.findAll();
+            const users = await models.users.findAll(
+                {attributes: {exclude: ['password']}}
+            );
 
             res.json({
                 success: true,
@@ -25,8 +27,9 @@ module.exports = {
         try {
             const user = await models.users.findOne({
                 where: {
-                    id: req.params.id
-                }
+                    id: req.params.id                                       
+                },
+                attributes: {exclude: ['password']}
             });
             
             res.json({
