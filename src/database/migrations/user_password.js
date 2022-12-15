@@ -7,7 +7,7 @@ module.exports = {
             queryInterface.addColumn('user', 'password', {
                 type: Sequelize.STRING,
                 allowNull: false,
-                defaultValue: bcrypt.hashSync('password', 10) // Encripto la contraseña por defecto
+                defaultValue: bcrypt.hashSync('password', 10)
             }),
         ])
     },
